@@ -19,4 +19,4 @@ export class NewsItem extends Component {
 }
 
 export default NewsItem
-//video number 29 
+//video number 29  

@@ -1,15 +1,15 @@
 import './App.css';
 
 import React, { Component } from 'react'
-import NavBar from './components/NavBar';
-import News from './components/News';
+import NavBar from './components/NavBar.js';
+import News from './components/News.js';
 
 export default class App extends Component {
   render() {
     return (
       <div>
         <NavBar/>
-        <News/>
+        <News pageSize={5}/>
       </div>
     )
   }
