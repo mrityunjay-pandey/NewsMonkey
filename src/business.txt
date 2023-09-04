@@ -5,3 +5,8 @@ health
 science
 sports
 technology
+
+
+
+
+<Route path="/business"><News pageSize={5} country="in" category="general"/></Route>
