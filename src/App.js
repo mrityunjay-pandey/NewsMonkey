@@ -1,16 +1,23 @@
 import './App.css';
 
-import React, { Component } from 'react'
+import React from 'react';
 import NavBar from './components/NavBar';
 import News from './News';
 
-export default class App extends Component {
-  render() {
-    return (
-      <div>
-        <NavBar/>
-        <News/>
-      </div>
-    )
-  }
-}
+const App = () => {
+  const [activeCategory, setActiveCategory] = React.useState('top');
+
+  return (
+    <>
+      <NavBar
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+      />
+      {/* Category is also managed locally in News; this prop is kept
+          so you can later lift state or plug in routing if desired. */}
+      <News />
+    </>
+  );
+};
+
+export default App;
