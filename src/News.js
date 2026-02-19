@@ -11,8 +11,6 @@ const News = () => {
   const [category, setCategory] = useState('top');
   const [query, setQuery] = useState('');
 
-  const apiKey = process.env.REACT_APP_NEWS_API_KEY;
-
   useEffect(() => {
     const controller = new AbortController();
 
@@ -20,12 +18,6 @@ const News = () => {
       try {
         setLoading(true);
         setError(null);
-
-        if (!apiKey) {
-          throw new Error(
-            'Missing REACT_APP_NEWS_API_KEY. Add it to your .env.local file.'
-          );
-        }
 
         const params = new URLSearchParams({
           country: 'us', // use a region with plenty of headlines on the free tier
@@ -40,15 +32,24 @@ const News = () => {
           params.append('q', query.trim());
         }
 
-        const endpoint =
-          category === 'top' && !query.trim()
-            ? `${API_BASE}/top-headlines`
-            : `${API_BASE}/top-headlines`;
+        const isProd = process.env.NODE_ENV === 'production';
 
-        const res = await fetch(`${endpoint}?${params.toString()}`, {
-          headers: { 'X-Api-Key': apiKey },
-          signal: controller.signal
-        });
+        const endpoint = isProd
+          ? `/api/news`
+          : `${API_BASE}/top-headlines`;
+
+        const fetchUrl = isProd
+          ? `${endpoint}?${params.toString()}`
+          : `${endpoint}?${params.toString()}`;
+
+        const fetchOptions = isProd
+          ? { signal: controller.signal }
+          : {
+              headers: { 'X-Api-Key': process.env.REACT_APP_NEWS_API_KEY },
+              signal: controller.signal
+            };
+
+        const res = await fetch(fetchUrl, fetchOptions);
 
         if (!res.ok) {
           throw new Error(`News API error: ${res.status}`);
@@ -86,7 +87,7 @@ const News = () => {
     fetchNews();
 
     return () => controller.abort();
-  }, [apiKey, category, query]);
+  }, [category, query]);
 
   const filteredArticles = useMemo(
     () =>
